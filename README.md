@@ -11,7 +11,8 @@ Hello Everyone! This is my second year with Advent of code and for a second time
 
 ### Day 1
 #### Approach and Unique features
-- To be completed! Check back after December 1, 2022.
+- It's begun!  First day complete!
+- Nothing too special in this code.  Used vectors to store data.  Decided not to sort and select the top 3 for the second challenge, but used comparisons to select the top 3. Sorting would have been an option for less code (probably just 2-3 lines) but much more processor intensive.  I'll be using that in later days I'm sure.
 
 ### Day 2
 #### Approach and Unique features

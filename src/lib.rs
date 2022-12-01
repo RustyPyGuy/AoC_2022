@@ -33,10 +33,10 @@ impl Config {
         let challenge: u8 = args.day;
         let mut filename: String = String::with_capacity(20);
         if args.day < 10 {
-            filename = format!("./input/day0{}.txt", args.day).to_string();
+            filename = format!("input/input0{}.txt", args.day).to_string();
         }
         if args.day >= 10 {
-            filename = format!("./input/day{}.txt", args.day).to_string();
+            filename = format!("input/input{}.txt", args.day).to_string();
         }
         if filename.is_empty() {
             return Err(Error::new(ErrorKind::Other, "oh no!"));
@@ -48,7 +48,7 @@ impl Config {
     }
 }
 
-pub fn open_puzzle_file_to_mem(config: &Config) -> Result<std::io::BufReader<File>, Error> {
+pub fn open_puzzle_file_to_buf(config: &Config) -> Result<std::io::BufReader<File>, Error> {
     let f = File::open(config.filename.clone()).unwrap_or_else(|err| {
         println!("Error opening file: {}", err);
         process::exit(1);
@@ -57,10 +57,14 @@ pub fn open_puzzle_file_to_mem(config: &Config) -> Result<std::io::BufReader<Fil
     Ok(br)
 }
 
-pub fn read_into_vec_lines<R: Read>(io: R) -> Result<Vec<i32>, std::io::Error> {
+pub fn read_buf_into_vec_lines<R: Read>(io: R) -> Result<Vec<i32>, std::io::Error> {
     let br = BufReader::new(io);
     let mut v = Vec::<i32>::with_capacity(2048);
     for line in br.lines() {
+        if line.as_ref().unwrap().is_empty() {
+            v.push(0);
+            continue;
+        }
         v.push(
             line?
                 .trim()
