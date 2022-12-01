@@ -1,0 +1,13 @@
+[package]
+# Advent of Code
+name = "aoc_22"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+clap = { version = "3.2", features =["derive"] } # Command line processing.
+grid = "~0.6.0" # from 2021.  For 2D representations.
+bimap = "~0.6.0"
+paste = "1"
+
