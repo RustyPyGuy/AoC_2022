@@ -16,7 +16,7 @@ Hello Everyone! This is my second year with Advent of code and for a second time
 
 ### Day 2
 #### Approach and Unique features
-- TBC.
+- Challenge 1 complete.  Check back for updates.
 
 ### Day 3
 #### Approach and Unique features
