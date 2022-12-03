@@ -16,8 +16,8 @@ Hello Everyone! This is my second year with Advent of code and for a second time
 
 ### Day 2
 #### Approach and Unique features
-- Challenge 1 complete.  Check back for updates.
-
+- For This Day I built built struct with methods and intended to change the data in the struct between challange 1 and 2.  It didn't work out to resuse the struct in a meaningful way, so that was extra coding for no practical benefit. 
+- I used conditional statements for challenge One and nested match statements for challenge Two.  Friends who opted to solve both with hashmaps had a faster answer and less code lines for sure!
 ### Day 3
 #### Approach and Unique features
 - TBC.

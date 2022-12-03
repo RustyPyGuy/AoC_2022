@@ -7,7 +7,7 @@ use std::io::Error; //import custom lib.rs module
 
 const DAY: u8 = 2;
 const TEST1_EXPECTED_OUTPUT: &str = "15";
-const TEST2_EXPECTED_OUTPUT: &str = "0";
+const TEST2_EXPECTED_OUTPUT: &str = "12";
 // use std::process;
 
 #[derive(Debug, Copy, Clone)]
@@ -74,16 +74,72 @@ impl RPS {
             return (0, 0);
         }
     }
+    pub fn calc_game2(self: Self, (abc, xyz): (char, char)) -> (u8, u8) {
+        // match xyz
+        let player_2: u8;
+        match xyz {
+            'X' => {
+                match abc {
+                    'A' => {
+                        player_2 = 3;
+                    } // lose to rock with scissors
+                    'B' => {
+                        player_2 = 1;
+                    } // lose to paper with rock
+                    'C' => {
+                        player_2 = 2;
+                    } // lose to scissors with paper
+                    _ => {
+                        player_2 = 0;
+                    }
+                };
+            }
+            'Y' => {
+                match abc {
+                    'A' => {
+                        player_2 = 1 + 3;
+                    } // draw with rock
+                    'B' => {
+                        player_2 = 2 + 3;
+                    } // draw with paper
+                    'C' => {
+                        player_2 = 3 + 3;
+                    } // draw with scissors
+                    _ => {
+                        player_2 = 0;
+                    }
+                };
+            }
+            'Z' => {
+                match abc {
+                    'A' => {
+                        player_2 = 2 + 6;
+                    } // win with paper
+                    'B' => {
+                        player_2 = 3 + 6;
+                    } //win with scissors
+                    'C' => {
+                        player_2 = 1 + 6;
+                    } // win with rock
+                    _ => {
+                        player_2 = 0;
+                    }
+                };
+            }
+            _ => player_2 = u8::MAX,
+        };
+        return (0, player_2);
+    }
 }
 
 pub fn day_2_challenge_1(config: &Config) -> Result<i128, Error> {
     let rps_challenge1 = RPS {
-        A: 1, //rock
-        B: 2, //paper
-        C: 3, //scissors
-        O1: 1,
-        O2: 2,
-        O3: 3,
+        A: 1,  //rock
+        B: 2,  //paper
+        C: 3,  //scissors
+        O1: 1, //rock
+        O2: 2, //paper
+        O3: 3, //scissors
     };
     let mut game_total_player2: usize = 0;
     let input_string: String = read_into_string(config);
@@ -96,13 +152,35 @@ pub fn day_2_challenge_1(config: &Config) -> Result<i128, Error> {
             splitline.next().unwrap().chars().next().unwrap(),
         );
         game_total_player2 += rps_challenge1.calc_game(game).1 as usize;
-        dbg!(game_total_player2);
+        // dbg!(game_total_player2);
     }
     Ok(game_total_player2 as i128)
 }
 
 pub fn day_2_challenge_2(config: &Config) -> Result<i128, Error> {
-    Ok(0)
+    let rps_irrelevant = RPS {
+        // irrevelant for challenge 2
+        A: 1,  //rock
+        B: 2,  //paper
+        C: 3,  //scissors
+        O1: 1, //rock
+        O2: 2, //paper
+        O3: 3, //scissors
+    };
+    let mut game_total_player2: usize = 0;
+    let input_string: String = read_into_string(config);
+    let vec_lines = read_string_to_vec_lines(&input_string);
+    for line in vec_lines.into_iter() {
+        // for chars_ in line.chars() {
+        let mut splitline = line.split_whitespace();
+        let game: (char, char) = (
+            splitline.next().unwrap().chars().next().unwrap(),
+            splitline.next().unwrap().chars().next().unwrap(),
+        );
+        game_total_player2 += rps_irrelevant.calc_game2(game).1 as usize;
+        // dbg!(game_total_player2);
+    }
+    Ok(game_total_player2 as i128)
 }
 
 pub fn test_config_d2() -> Config {
