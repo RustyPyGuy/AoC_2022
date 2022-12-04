@@ -75,6 +75,18 @@ pub fn read_buf_into_vec_lines<R: Read>(io: R) -> Result<Vec<i32>, std::io::Erro
     Ok(v)
 }
 
+pub fn read_buf_into_vec_strings<R: Read>(io: R) -> Result<Vec<String>, std::io::Error> {
+    let br = BufReader::new(io);
+    let mut v = Vec::<String>::with_capacity(2048);
+    for line in br.lines() {
+        if line.as_ref().unwrap().is_empty() {
+            continue;
+        }
+        v.push(line.map_err(|e| std::io::Error::new(ErrorKind::InvalidData, e))?);
+    }
+    Ok(v)
+}
+
 pub fn read_into_string(config: &Config) -> String {
     // let f = File::open(config.filename.clone()).unwrap_or_else(|err| {
     //     println!("Error opening file: {}", err);

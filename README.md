@@ -20,7 +20,7 @@ Hello Everyone! This is my second year with Advent of code and for a second time
 - I used conditional statements for challenge One and nested match statements for challenge Two.  Friends who opted to solve both with hashmaps had a faster answer and less code lines for sure!
 ### Day 3
 #### Approach and Unique features
-- TBC.
+- Hashmaps were my go-to data structure this day.  I think there are some better crtes for getting, comparing, and setting values, but I used std only.  
 
 ### Day 4
 #### Approach and Unique features

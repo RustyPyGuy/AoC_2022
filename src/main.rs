@@ -6,6 +6,7 @@ use aoc_22::*; //import lib module
 mod day0;
 mod day1;
 mod day2;
+mod day3;
 
 use clap::Parser;
 // use std::env;
@@ -53,6 +54,18 @@ fn main() {
             );
             result.push(
                 day2::day_2_challenge_2(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+        }
+        3 => {
+            result.push(
+                day3::day_3_challenge_1(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+            result.push(
+                day3::day_3_challenge_2(&config.as_ref().unwrap())
                     .unwrap()
                     .into(),
             );
