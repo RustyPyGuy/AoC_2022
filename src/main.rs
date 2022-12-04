@@ -7,6 +7,7 @@ mod day0;
 mod day1;
 mod day2;
 mod day3;
+mod day4;
 
 use clap::Parser;
 // use std::env;
@@ -66,6 +67,18 @@ fn main() {
             );
             result.push(
                 day3::day_3_challenge_2(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+        }
+        4 => {
+            result.push(
+                day4::day_4_challenge_1(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+            result.push(
+                day4::day_4_challenge_2(&config.as_ref().unwrap())
                     .unwrap()
                     .into(),
             );

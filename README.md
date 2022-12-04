@@ -20,11 +20,12 @@ Hello Everyone! This is my second year with Advent of code and for a second time
 - I used conditional statements for challenge One and nested match statements for challenge Two.  Friends who opted to solve both with hashmaps had a faster answer and less code lines for sure!
 ### Day 3
 #### Approach and Unique features
-- Hashmaps were my go-to data structure this day.  I think there are some better crtes for getting, comparing, and setting values, but I used std only.  
+- Hashmaps were my go-to data structure this day.  I think there are some better crates for getting, comparing, and setting values, but I used std only.  
 
 ### Day 4
 #### Approach and Unique features
-- TBC.
+- These two challenges involved character and line parsing as the primary programming challenge.  Since the data sets were short, I went with hard-wired line decoding.  Not much use of loops per line as there were only 4 integer data points per line.  
+- With the data in integers, the remainder of the programming seemed easy as I did not find the logic to be difficult to visualize.
 
 ### Day 5
 #### Approach and Unique features
