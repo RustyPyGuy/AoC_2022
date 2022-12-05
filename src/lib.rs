@@ -102,6 +102,7 @@ pub fn read_string_to_vec_lines<'a>(input: &'a String) -> Vec<&'a str> {
     // output
     lines
 }
+
 // pub fn iterate_by_lines_from_string(input: String, output: Vec<&'static mut str>) -> Vec<&'static mut str> {
 //     let mut lines: Vec<&'static mut str> = input.lines().filter(|l| l != &"").collect();
 //     // let output = lines.iter();
@@ -139,6 +140,27 @@ paste::item! {
                 &computed_output.as_ref().unwrap()
             );
             if [<TEST $challenge _EXPECTED_OUTPUT>] .parse::<i128>().unwrap() == computed_output.unwrap() {
+                assert!(true);
+            } else {
+                assert!(false);
+            }
+        }
+            }
+    };
+}
+#[macro_export]
+macro_rules! test_expected_computed_string {
+    ($day:literal, $challenge:literal, $config:expr) => {
+paste::item! {
+            #[test]
+            fn [< compare_output_example_day_ $day _challenge_ $challenge >] () {
+            let computed_output = [< day_ $day _challenge_ $challenge >] (&$config);
+            println!(
+                "Expected output: {}\nComputed output: {}\n\n",
+                & [< TEST $challenge _EXPECTED_OUTPUT>] ,
+                &computed_output.as_ref().unwrap()
+            );
+            if [<TEST $challenge _EXPECTED_OUTPUT>] .parse::<String>().unwrap() == computed_output.unwrap() {
                 assert!(true);
             } else {
                 assert!(false);

@@ -29,7 +29,7 @@ Hello Everyone! This is my second year with Advent of code and for a second time
 
 ### Day 5
 #### Approach and Unique features
-- TBC.
+- Complete! Took way too long debugging input.  Challenge 2 was a gift!
 
 ### Day 6
 #### Approach and Unique features

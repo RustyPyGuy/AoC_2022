@@ -8,6 +8,7 @@ mod day1;
 mod day2;
 mod day3;
 mod day4;
+mod day5;
 
 use clap::Parser;
 // use std::env;
@@ -82,6 +83,25 @@ fn main() {
                     .unwrap()
                     .into(),
             );
+        }
+        5 => {
+            let output1: String = day5::day_5_challenge_1(&config.as_ref().unwrap()).unwrap();
+            let output2: String = day5::day_5_challenge_2(&config.as_ref().unwrap()).unwrap();
+            println!("output 1:  {}\noutput 2:  {}\n\n", output1, output2);
+            // result.push(
+            //     day5::day_5_challenge_1(&config.as_ref().unwrap())
+            //         .unwrap()
+            //         .into(),
+            // );
+            // result.push(
+            //     day5::day_5_challenge_2(&config.as_ref().unwrap())
+            //         .unwrap()
+            //         .into(),
+            // );
+        }
+        6..=25 => {
+            println!("These challenges haven't been completed yet.  Try again later!!");
+            process::exit(1);
         }
 
         _ => {
