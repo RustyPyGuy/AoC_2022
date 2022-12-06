@@ -29,11 +29,13 @@ Hello Everyone! This is my second year with Advent of code and for a second time
 
 ### Day 5
 #### Approach and Unique features
-- Complete! Took way too long debugging input.  Challenge 2 was a gift!
+- Complete! Took way too long debugging input.
+- Challenge 2 was a gift and I only had to change one line!
 
 ### Day 6
 #### Approach and Unique features
-- TBC.
+- The main approach was to read the input as an iterator, push the current value and set of comparisons into a HashSet, and then see if there were any dropped duplicates.
+- *Added LOTS of comments to the code to explain it nearly line by line.*
 
 ### Day 7
 #### Approach and Unique features

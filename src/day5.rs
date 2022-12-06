@@ -12,7 +12,7 @@ const TEST2_EXPECTED_OUTPUT: &str = "MCD";
 
 // Column, left to right, stack bottom to top of Characters
 // indexing will be [column from left][row from bottom]
-pub type CrateStack = Vec<Vec<char>>; 
+pub type CrateStack = Vec<Vec<char>>;
 pub type CommandList = Vec<(usize, usize, usize)>;
 
 /// Get the dimensions of the first portion of data
@@ -54,7 +54,7 @@ pub fn read_buf_into_defined_columns2<R: Read>(
         let line_str2 = line_str.char_indices();
         for (index, char_) in line_str2 {
             if char_.is_alphabetic() {
-                let insert_index = (index - 1)/4;
+                let insert_index = (index - 1) / 4;
                 crate_stack[insert_index].push(char_);
             }
         }
@@ -80,7 +80,7 @@ pub fn read_buf_into_command_list<R: Read>(io: &mut R) -> Result<CommandList, st
             .filter_map(|x| x.parse::<usize>().ok())
             .collect();
         // I like tuple indexing better.
-        command_list.push((values2[0], values2[1], values2[2])); 
+        command_list.push((values2[0], values2[1], values2[2]));
     }
     Ok(command_list)
 }
