@@ -11,4 +11,5 @@ grid = "~0.6.0" # from 2021.  For 2D representations.
 bimap = "~0.6.0"
 paste = "1"
 itertools = "0.10"
+id_tree = "1.8"
 

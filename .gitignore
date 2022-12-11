@@ -3,4 +3,5 @@
 session
 scratch
 Cargo.lock
+*.fail
 

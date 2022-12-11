@@ -93,7 +93,7 @@ pub fn day_6_challenge_2(config: &Config) -> Result<i128, Error> {
     let input_string = read_into_string(&config);
     let mut string_multipeek = input_string.char_indices().multipeek();
     let mut output: (usize, char) = (0, '_');
-     // larger pre-allocation. HashSet::new(); can also be used.
+    // larger pre-allocation. HashSet::new(); can also be used.
     let mut hash_set: HashSet<char> = HashSet::with_capacity(14);
     loop {
         hash_set.clear();
@@ -111,7 +111,7 @@ pub fn day_6_challenge_2(config: &Config) -> Result<i128, Error> {
                     // immediately break for the loop if the HashSet fails to insert a value.
                     // This iteration of the loop is not a winner.
                     break;
-                } 
+                }
             }
         }
         if hash_set.len() == 14 {

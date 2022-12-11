@@ -3,6 +3,8 @@
  *
  */
 use aoc_22::*; //import lib module
+#[allow(unused_imports)]
+use std::time::{Duration, Instant};
 mod day0;
 mod day1;
 mod day2;
@@ -10,12 +12,16 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
+// 8
+mod day9;
 
 use clap::Parser;
 // use std::env;
 use std::process;
 
 fn main() {
+    let start = Instant::now();
     println!("Advent of Code!");
     // parse command line
     let cli_args = CLIArgs::parse();
@@ -102,7 +108,31 @@ fn main() {
                     .into(),
             );
         }
-        7..=25 => {
+        7 => {
+            result.push(
+                day7::day_7_challenge_1(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+            result.push(
+                day7::day_7_challenge_2(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+        }
+        9 => {
+            result.push(
+                day9::day_9_challenge_1(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+            result.push(
+                day9::day_9_challenge_2(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+        }
+        10..=25 => {
             println!("These challenges haven't been completed yet.  Try again later!!");
             process::exit(1);
         }
@@ -112,11 +142,13 @@ fn main() {
             process::exit(1);
         }
     };
+    let duration = start.elapsed();
     println!(
-        "The results for Day {} are:\n\
-        Challenge 1 result {}\nChallenge 2 result {}",
+        "\nThe results for Day {} are:\n\
+        Challenge 1 result {}\nChallenge 2 result {}\n\nExecution time including file reading: {:?}",
         config.unwrap().challenge,
         result[0],
-        result[1]
+        result[1],
+duration
     );
 }

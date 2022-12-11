@@ -4,7 +4,7 @@
 #![allow(dead_code)]
 use aoc_22::*;
 // use std::io::Error; //import custom lib.rs module
-use std::io::{BufRead, BufReader, Error, ErrorKind, Read, Seek, SeekFrom};
+use std::io::{BufRead, BufReader, Error, Read, Seek, SeekFrom};
 
 const DAY: u8 = 5;
 const TEST1_EXPECTED_OUTPUT: &str = "CMZ";
@@ -38,18 +38,16 @@ pub fn read_buf_into_defined_columns2<R: Read>(
     io: &mut R,
     rows: usize,
     columns: usize,
-    column_width: usize,
 ) -> Result<CrateStack, std::io::Error> {
-    let mut br = BufReader::new(io);
+    let br = BufReader::new(io);
     let mut crate_stack: CrateStack = Vec::new();
-    for i in 0..columns {
+    for _ in 0..columns {
         crate_stack.push(Vec::with_capacity(78)); // a macro could do this.
     }
     for (row, line) in br.lines().enumerate() {
         if row >= rows {
             break;
         }
-        let mut eval_string = String::new().as_str();
         let line_str = line.unwrap().clone();
         let line_str2 = line_str.char_indices();
         for (index, char_) in line_str2 {
@@ -90,11 +88,12 @@ pub fn day_5_challenge_1(config: &Config) -> Result<String, Error> {
     let (rows, columns): (usize, usize) = read_buf_calculate_grid(&mut buf);
     dbg!(&rows, &columns);
     buf.seek(SeekFrom::Start(0)).expect("file buffer error");
-    let mut crate_stack = read_buf_into_defined_columns2(&mut buf, rows, columns, 4).unwrap();
+    let mut crate_stack = read_buf_into_defined_columns2(&mut buf, rows, columns).unwrap();
     buf.seek(SeekFrom::Start(0)).expect("file buffer error");
     let command_list = read_buf_into_command_list(&mut buf).unwrap();
+    #[allow(unused_assignments)]
     let mut stacking_vec: Vec<char> = Vec::with_capacity(72);
-    for mut command in command_list.into_iter() {
+    for command in command_list.into_iter() {
         let from_i = command.1 - 1;
         let to_i = command.2 - 1;
         let vert_split_i: usize = crate_stack[from_i].len() - command.0;
@@ -120,11 +119,12 @@ pub fn day_5_challenge_2(config: &Config) -> Result<String, Error> {
     dbg!(&rows, &columns);
     buf.seek(SeekFrom::Start(0)).expect("file buffer error");
     // let mut crate_stack = read_buf_into_defined_columns(&mut buf, rows, columns, 4).unwrap();
-    let mut crate_stack = read_buf_into_defined_columns2(&mut buf, rows, columns, 4).unwrap();
+    let mut crate_stack = read_buf_into_defined_columns2(&mut buf, rows, columns).unwrap();
     buf.seek(SeekFrom::Start(0)).expect("file buffer error");
     let command_list = read_buf_into_command_list(&mut buf).unwrap();
+    #[allow(unused_assignments)]
     let mut stacking_vec: Vec<char> = Vec::with_capacity(72);
-    for mut command in command_list.into_iter() {
+    for command in command_list.into_iter() {
         let from_i = command.1 - 1;
         let to_i = command.2 - 1;
         let vert_split_i: usize = crate_stack[from_i].len() - command.0;

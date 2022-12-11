@@ -31,7 +31,9 @@ impl DataStruct {
     }
 }
 
-pub fn day_0_challenge_1(_config: &Config) -> Result<i128, Error> {
+pub fn day_0_challenge_1(config: &Config) -> Result<i128, Error> {
+    let buf = open_puzzle_file_to_buf(config).unwrap();
+    let _vec_strings = read_buf_into_vec_strings(buf);
     Ok(1)
 }
 
