@@ -36,7 +36,8 @@ Hello Everyone! This is my second year with Advent of code and for a second time
 - I am dedicated to using a tree structure despite advice that it's not the fastest to code.
 
 ### Day 8
-- Not solved. temporarily skipped.
+- Solved.  Mainly a lot of iterations through rows and columns with loop breaks where possible.
+- used the `grid` crate for 2 dimensional addressing.
 
 ### Day 9
 - Solved! This was a fun one. 

@@ -13,7 +13,7 @@ mod day4;
 mod day5;
 mod day6;
 mod day7;
-// 8
+mod day8;
 mod day9;
 
 use clap::Parser;
@@ -116,6 +116,18 @@ fn main() {
             );
             result.push(
                 day7::day_7_challenge_2(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+        }
+        8 => {
+            result.push(
+                day8::day_8_challenge_1(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+            result.push(
+                day8::day_8_challenge_2(&config.as_ref().unwrap())
                     .unwrap()
                     .into(),
             );
