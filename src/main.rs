@@ -14,6 +14,8 @@ mod day5;
 mod day6;
 mod day7;
 mod day8;
+// day 10
+mod day11;
 mod day9;
 
 use clap::Parser;
@@ -144,7 +146,19 @@ fn main() {
                     .into(),
             );
         }
-        10..=25 => {
+        11 => {
+            result.push(
+                day11::day_11_challenge_1(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+            result.push(
+                day11::day_11_challenge_2(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+        }
+        15..=25 => {
             println!("These challenges haven't been completed yet.  Try again later!!");
             process::exit(1);
         }

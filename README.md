@@ -43,5 +43,11 @@ Hello Everyone! This is my second year with Advent of code and for a second time
 - Solved! This was a fun one. 
 - Several nested loops.  Probably could make this one more performant with some early loop breakouts and definitely by sharing mutable variables to reduce memory operations.
 
-### Day 10 and beyond!
-If I get this far, I will be doing better than 2021!
+### Day 10
+- Skipped for now. Check back later.
+### Day 11
+- Solved part One! Rumors are part 2 has a non-obvious mathemetical concept that I'll come back to.
+- Reformatted the input into YAML with string slicing. Used `serde` and `serde_yaml` to process the input and then procesed it further to get in the structs I wanted. This was the long way around inputting the data, but I wanted to learn the concepts of serialization and deserialization.  I spent a lot of extra time on that.
+- Also a good use of a `VecDeque`.  
+### More Days Ahead!
+If I get much beyond Day 10, I be doing better than 2021!
