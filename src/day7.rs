@@ -50,8 +50,9 @@ pub fn day_7_challenge_1(config: &Config) -> Result<i128, Error> {
     fn match_to_tree<'a, 'b>(
         iter_line: Vec<&str>,
         tree: &'a mut Tree<FileListing2>,
-        mut tree_pointer: &'a NodeId,
-    ) -> &'a NodeId {
+        mut tree_pointer: &'a mut NodeId,
+    ) /*-> &'a NodeId */
+    {
         //&dyn Iterator<Item = Vec<&str>>
         let mut term_line_iter = iter_line.into_iter().multipeek();
         let i1 = term_line_iter.next().unwrap_or(&"");
@@ -59,6 +60,7 @@ pub fn day_7_challenge_1(config: &Config) -> Result<i128, Error> {
         let i3 = term_line_iter.next().unwrap_or(&"");
         // let sfs_tree_ref = &mut sfs_tree;
         // drop(sfs_tree_ref);
+        let mut tree_pointer_temp = tree_pointer.clone();
         match i1 {
             "$" => {
                 match i2 {
@@ -66,19 +68,19 @@ pub fn day_7_challenge_1(config: &Config) -> Result<i128, Error> {
                         match i3 {
                             ".." => {
                                 if let Some(_) = Some(0) {
-                                    tree_pointer =
-                                        tree.get(&tree_pointer).unwrap().parent().unwrap();
+                                    // TEMP                                    // tree_pointer =
+                                    //     tree.get( &tree_pointer_temp).unwrap().parent().unwrap();
                                 }
                             }
                             "/" => {
                                 "/".to_string();
-                                tree_pointer = tree.root_node_id().unwrap();
+                                // TEMP                                // tree_pointer = tree.root_node_id().unwrap();
                             }
                             _ => {
                                 i3.to_string();
                                 for child in tree.children_ids(&tree_pointer).unwrap() {
                                     if tree.get(child).unwrap().data().name == i3 {
-                                        tree_pointer = child;
+                                        // TEMP                                        // tree_pointer = child;
                                     }
                                 }
                                 // current_pointer = current_pointer.
@@ -110,17 +112,16 @@ pub fn day_7_challenge_1(config: &Config) -> Result<i128, Error> {
                 if i1.parse::<usize>().is_ok() {}
             }
         };
-
-        tree_pointer
     }
 
     #[allow(unused_mut)]
     let mut iter_term = input_elements.into_iter();
     #[allow(unused_variables, unreachable_code)]
     for term_line in iter_term {
-        // NOTE: WORK IN PROGRESS
-        // let sfs_pointer_temp = match_to_tree(term_line, &mut sfs_tree, sfs_pointer);
-        // sfs_pointer = sfs_pointer_temp;
+        // NOTE: WORK IN PROGRESS. THE BELOW HAS A BORROWING ERROR.
+        // let sfs_pointer_temp = match_to_tree(term_line, &mut sfs_tree, &mut sfs_pointer);
+        //       match_to_tree(term_line, &mut sfs_tree, &mut sfs_pointer);
+
         // NOTE: Remove below if function works1
         // let mut term_line_iter = term_line.into_iter().multipeek();
         // let i1 = term_line_iter.next().unwrap_or(&"").trim();

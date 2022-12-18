@@ -67,9 +67,6 @@ pub fn day_1_challenge_2(config: &Config) -> Result<i128, Error> {
             continue;
         }
     }
-    dbg!(max_elf);
-    dbg!(max_elf2);
-    dbg!(max_elf3);
     let total_elf = max_elf + max_elf2 + max_elf3;
     Ok(total_elf as i128)
 }

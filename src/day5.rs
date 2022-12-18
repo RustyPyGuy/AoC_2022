@@ -86,7 +86,6 @@ pub fn read_buf_into_command_list<R: Read>(io: &mut R) -> Result<CommandList, st
 pub fn day_5_challenge_1(config: &Config) -> Result<String, Error> {
     let mut buf = open_puzzle_file_to_buf(config).unwrap();
     let (rows, columns): (usize, usize) = read_buf_calculate_grid(&mut buf);
-    dbg!(&rows, &columns);
     buf.seek(SeekFrom::Start(0)).expect("file buffer error");
     let mut crate_stack = read_buf_into_defined_columns2(&mut buf, rows, columns).unwrap();
     buf.seek(SeekFrom::Start(0)).expect("file buffer error");
@@ -100,7 +99,6 @@ pub fn day_5_challenge_1(config: &Config) -> Result<String, Error> {
         stacking_vec = crate_stack[from_i].split_off(vert_split_i);
         stacking_vec.reverse();
         crate_stack[to_i].append(&mut stacking_vec);
-        dbg!(&crate_stack);
     }
     let mut output_string = String::new();
     for mut crate_ in crate_stack.into_iter() {
@@ -116,7 +114,6 @@ pub fn day_5_challenge_1(config: &Config) -> Result<String, Error> {
 pub fn day_5_challenge_2(config: &Config) -> Result<String, Error> {
     let mut buf = open_puzzle_file_to_buf(config).unwrap();
     let (rows, columns): (usize, usize) = read_buf_calculate_grid(&mut buf);
-    dbg!(&rows, &columns);
     buf.seek(SeekFrom::Start(0)).expect("file buffer error");
     // let mut crate_stack = read_buf_into_defined_columns(&mut buf, rows, columns, 4).unwrap();
     let mut crate_stack = read_buf_into_defined_columns2(&mut buf, rows, columns).unwrap();
@@ -131,7 +128,6 @@ pub fn day_5_challenge_2(config: &Config) -> Result<String, Error> {
         stacking_vec = crate_stack[from_i].split_off(vert_split_i);
         // stacking_vec.reverse();  // ONE CHANGED LINE!!
         crate_stack[to_i].append(&mut stacking_vec);
-        dbg!(&crate_stack);
     }
     let mut output_string = String::new();
     for mut crate_ in crate_stack.into_iter() {

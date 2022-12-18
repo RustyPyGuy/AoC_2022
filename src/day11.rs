@@ -7,7 +7,7 @@ use std::io::Error; //import custom lib.rs module
 
 const DAY: u8 = 11;
 const TEST1_EXPECTED_OUTPUT: &str = "10605";
-const TEST2_EXPECTED_OUTPUT: &str = "0";
+const TEST2_EXPECTED_OUTPUT: &str = "2713310158";
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 #[serde(default)]
@@ -156,10 +156,62 @@ pub fn day_11_challenge_1(config: &Config) -> Result<i128, Error> {
     Ok(monkey_business as i128)
 }
 
+fn single_monkey_inspect_c2(monkey_vec: &mut Vec<Monkey>, index: usize, large_value: bool) {
+    loop {
+        if let Some(mut item) = monkey_vec[index].items.pop_front() {
+            if large_value == true {
+                item = item / 9699690;
+            }
+            #[rustfmt::skip]
+            match monkey_vec[index].operation.0 {
+                'a' => { item = item + monkey_vec[index].operation.1; }
+                'm' => { item = item * monkey_vec[index].operation.1; }
+                'd' => { item = item * item; }
+                _ => { panic!("Bad match."); }
+            };
+
+            // item = item / 3;
+            if item % monkey_vec[index].test_value == 0 {
+                let action = monkey_vec[index].test_true;
+                monkey_vec[action].items.push_back(item);
+            } else {
+                let action = monkey_vec[index].test_false;
+                monkey_vec[action].items.push_back(item);
+            }
+            monkey_vec[index].total_inspections += 1;
+        } else {
+            break;
+        }
+    }
+}
 pub fn day_11_challenge_2(config: &Config) -> Result<i128, Error> {
-    let buf = open_puzzle_file_to_buf(config).unwrap();
-    let _vec_strings = read_buf_into_vec_strings(buf);
-    Ok(1)
+    let mut monkey_vec: Vec<Monkey> = read_serialize_puzzle_file(config).unwrap();
+    let monkey_len = monkey_vec.len().clone();
+    for _ in 0..10 {
+        // this approach taken because we don't want to actually iterate over the vector this time.
+        for i in 0..monkey_len {
+            single_monkey_inspect_c2(&mut monkey_vec, i, false);
+        }
+    }
+    for _ in 10..1000 {
+        // this approach taken because we don't want to actually iterate over the vector this time.
+        for i in 0..monkey_len {
+            single_monkey_inspect_c2(&mut monkey_vec, i, true);
+        }
+    }
+    let mut hi_1: usize = 0;
+    let mut hi_2: usize = 0;
+    for monkey in monkey_vec.iter() {
+        if monkey.total_inspections > hi_1 {
+            hi_2 = hi_1;
+            hi_1 = monkey.total_inspections;
+        } else if monkey.total_inspections > hi_2 {
+            hi_2 = monkey.total_inspections;
+        }
+    }
+    let monkey_business = hi_1 * hi_2;
+
+    Ok(monkey_business as i128)
 }
 
 pub fn test_config_d11() -> Config {

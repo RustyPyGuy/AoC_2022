@@ -14,9 +14,10 @@ mod day5;
 mod day6;
 mod day7;
 mod day8;
+mod day9;
 // day 10
 mod day11;
-mod day9;
+mod day14;
 
 use clap::Parser;
 // use std::env;
@@ -154,6 +155,18 @@ fn main() {
             );
             result.push(
                 day11::day_11_challenge_2(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+        }
+        14 => {
+            result.push(
+                day14::day_14_challenge_1(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+            result.push(
+                day14::day_14_challenge_2(&config.as_ref().unwrap())
                     .unwrap()
                     .into(),
             );
