@@ -4,20 +4,24 @@
 use aoc_22::*;
 use id_tree::*;
 use itertools::Itertools;
+use std::cell::RefCell;
 use std::collections::HashMap;
-use std::{fs::File, io::Error, ops::Deref}; //import custom lib.rs module
+use std::rc::Rc;
+use std::{
+    fs::File,
+    io::Error,
+    ops::{Deref, DerefMut},
+}; //import custom lib.rs module
 
 const DAY: u8 = 0;
 const TEST1_EXPECTED_OUTPUT: &str = "95437";
-const TEST2_EXPECTED_OUTPUT: &str = "1";
+const TEST2_EXPECTED_OUTPUT: &str = "24933642";
 
 #[derive(Debug, Clone)]
 pub struct FileListing2 {
     name: String,
     size: usize,
     is_dir: bool,
-    p_name: String,
-    c_names: Vec<String>,
 }
 pub fn day_7_challenge_1(config: &Config) -> Result<i128, Error> {
     // Read and input data to a vector that is separated by words
@@ -27,9 +31,52 @@ pub fn day_7_challenge_1(config: &Config) -> Result<i128, Error> {
         let segmented_line: Vec<&str> = line.split_whitespace().collect();
         input_elements.push(segmented_line);
     }
-    // parsing with a match statement
-    //
-    use id_tree::InsertBehavior::*;
+    let mut sfs_tree: Tree<FileListing2> = TreeBuilder::new().with_node_capacity(1000).build();
+    let root_id: NodeId = sfs_tree
+        .insert(
+            Node::new(FileListing2 {
+                name: "/".to_string(),
+                size: 0,
+                is_dir: true,
+            }),
+            InsertBehavior::AsRoot,
+        )
+        .unwrap();
+    let sfs_pointer = root_id.clone();
+    let mut tree_refcell: Rc<RefCell<NodeId>> = Rc::new(RefCell::new(sfs_pointer));
+
+    let iter_term = input_elements.into_iter();
+    for term_line in iter_term {
+        create_tree_node_from_line_match(term_line, &mut sfs_tree, &mut tree_refcell);
+    }
+    apply_dir_sizes(&mut sfs_tree);
+    let mut tree_traversal = sfs_tree.traverse_level_order_ids(&root_id).unwrap();
+    let mut size_over_10k: usize = 0;
+    while let Some(item_id) = tree_traversal.next() {
+        if sfs_tree.get(&item_id).unwrap().data().is_dir == true {
+            let dir_recurse_size = pseudo_recursive_add_sizes(&item_id, &sfs_tree);
+            if dir_recurse_size <= 100_000 {
+                size_over_10k += dir_recurse_size;
+            }
+        }
+    }
+
+    // ENABLE below for a pretty tree print-out.
+    // let mut s = String::new();
+    // sfs_tree.write_formatted(&mut s).unwrap();
+    // print!("{}", s);
+
+    Ok(size_over_10k as i128)
+}
+
+pub fn day_7_challenge_2(config: &Config) -> Result<i128, Error> {
+    // Read and input data to a vector that is separated by words
+    let input_string = read_into_string(config);
+    let mut input_elements: Vec<Vec<&str>> = Vec::from(Vec::with_capacity(4));
+    for line in input_string.lines() {
+        let segmented_line: Vec<&str> = line.split_whitespace().collect();
+        input_elements.push(segmented_line);
+    }
     let mut sfs_tree: Tree<FileListing2> = TreeBuilder::new().with_node_capacity(1000).build();
 
     let root_id: NodeId = sfs_tree
@@ -38,185 +85,155 @@ pub fn day_7_challenge_1(config: &Config) -> Result<i128, Error> {
                 name: "/".to_string(),
                 size: 0,
                 is_dir: true,
-                p_name: "".to_string(),
-                c_names: Vec::new(),
             }),
-            AsRoot,
+            InsertBehavior::AsRoot,
         )
         .unwrap();
-    #[allow(unused_variables, unused_mut)]
-    let mut sfs_pointer = &root_id;
+    let sfs_pointer = root_id.clone();
+    let mut tree_refcell: Rc<RefCell<NodeId>> = Rc::new(RefCell::new(sfs_pointer));
 
-    fn match_to_tree<'a, 'b>(
-        iter_line: Vec<&str>,
-        tree: &'a mut Tree<FileListing2>,
-        mut tree_pointer: &'a mut NodeId,
-    ) /*-> &'a NodeId */
-    {
-        //&dyn Iterator<Item = Vec<&str>>
-        let mut term_line_iter = iter_line.into_iter().multipeek();
-        let i1 = term_line_iter.next().unwrap_or(&"");
-        let i2 = term_line_iter.next().unwrap_or(&"");
-        let i3 = term_line_iter.next().unwrap_or(&"");
-        // let sfs_tree_ref = &mut sfs_tree;
-        // drop(sfs_tree_ref);
-        let mut tree_pointer_temp = tree_pointer.clone();
-        match i1 {
-            "$" => {
-                match i2 {
-                    "cd" => {
-                        match i3 {
-                            ".." => {
-                                if let Some(_) = Some(0) {
-                                    // TEMP                                    // tree_pointer =
-                                    //     tree.get( &tree_pointer_temp).unwrap().parent().unwrap();
-                                }
-                            }
-                            "/" => {
-                                "/".to_string();
-                                // TEMP                                // tree_pointer = tree.root_node_id().unwrap();
-                            }
-                            _ => {
-                                i3.to_string();
-                                for child in tree.children_ids(&tree_pointer).unwrap() {
-                                    if tree.get(child).unwrap().data().name == i3 {
-                                        // TEMP                                        // tree_pointer = child;
-                                    }
-                                }
-                                // current_pointer = current_pointer.
-                            }
-                        };
-                    }
-                    "ls" => {}
-                    _ => {}
-                };
+    let iter_term = input_elements.into_iter();
+    for term_line in iter_term {
+        create_tree_node_from_line_match(term_line, &mut sfs_tree, &mut tree_refcell);
+    }
+    apply_dir_sizes(&mut sfs_tree);
+    let total_occupied_space = pseudo_recursive_add_sizes(&root_id, &sfs_tree);
+    let minimum_delete_amount = 30000000 - (70000000 - total_occupied_space);
+    let mut delete_amount_candidate: usize = usize::MAX;
+    let mut tree_traversal = sfs_tree.traverse_level_order_ids(&root_id).unwrap();
+    while let Some(item_id) = tree_traversal.next() {
+        if sfs_tree.get(&item_id).unwrap().data().is_dir == true {
+            let dir_recurse_size = pseudo_recursive_add_sizes(&item_id, &sfs_tree);
+            if dir_recurse_size >= minimum_delete_amount
+                && dir_recurse_size < delete_amount_candidate
+            {
+                delete_amount_candidate = dir_recurse_size;
             }
-            "dir" => {
+        }
+    }
+    // ENABLE below for a pretty tree print-out.
+    // let mut s = String::new();
+    // sfs_tree.write_formatted(&mut s).unwrap();
+    // print!("{}", s);
+    Ok(delete_amount_candidate as i128)
+}
+
+// takes one line of input and creates a node or assigns the pointer to a new directory.  This
+// function should be claled in loop iterations.  Modifies borrowed variables.
+// The pointer is a refcell which is necessary because mutable and immutable borrows of the tree
+// occur at the same time.
+fn create_tree_node_from_line_match<'a, 'b>(
+    iter_line: Vec<&str>,
+    tree: &'a mut Tree<FileListing2>,
+    tree_refcell: &'a mut Rc<RefCell<NodeId>>,
+) {
+    let mut term_line_iter = iter_line.into_iter().multipeek();
+    let i1 = term_line_iter.next().unwrap_or(&"");
+    let i2 = term_line_iter.next().unwrap_or(&"");
+    let i3 = term_line_iter.next().unwrap_or(&"");
+    match i1 {
+        "$" => {
+            match i2 {
+                "cd" => {
+                    match i3 {
+                        ".." => {
+                            // if let Some(_) = Some(0) {
+                            // NOTE: This unwrap_or is a guess to prevent panic
+
+                            let parent_id = tree.get( tree_refcell.borrow().deref()).unwrap().parent().unwrap_or_else(|| {println!("no value for parent. current node: {:?} moving to root node.", tree_refcell.borrow().deref());tree.root_node_id().unwrap()});
+                            *tree_refcell.borrow_mut() = parent_id.clone();
+                        }
+                        "/" => {
+                            "/".to_string();
+                            *tree_refcell.borrow_mut() = tree.root_node_id().unwrap().clone();
+                        }
+                        _ => {
+                            let mut temp_pointer: NodeId = tree_refcell.borrow().deref().clone();
+                            i3.to_string();
+                            for child in tree.children_ids(tree_refcell.borrow().deref()).unwrap() {
+                                if tree.get(child).unwrap().data().name == i3 {
+                                    temp_pointer = child.clone();
+                                }
+                            }
+                            *tree_refcell.borrow_mut() = temp_pointer;
+                        }
+                    };
+                }
+                "ls" => {}
+                _ => {}
+            };
+        }
+        "dir" => {
+            #[allow(unused_variables)]
+            let new_node = tree
+                .insert(
+                    Node::new(FileListing2 {
+                        name: i2.to_string(),
+                        size: 0,
+                        is_dir: true,
+                    }),
+                    InsertBehavior::UnderNode(tree_refcell.borrow().deref()),
+                )
+                .unwrap();
+        }
+        _ => {
+            // if i2.map(|| true) {
+            if i1.parse::<usize>().is_ok() {
                 #[allow(unused_variables)]
                 let new_node = tree
                     .insert(
                         Node::new(FileListing2 {
                             name: i2.to_string(),
-                            size: 0,
-                            is_dir: true,
-                            p_name: "".to_string(),
-                            c_names: Vec::new(),
+                            size: i1.parse::<usize>().unwrap(),
+                            is_dir: false,
                         }),
-                        UnderNode(&tree_pointer),
+                        InsertBehavior::UnderNode(tree_refcell.borrow().deref()),
                     )
                     .unwrap();
+            } else {
+                println!("decoding error in file listing");
             }
-            // "123" => {  },
-            _ => {
-                // if i2.map(|| true) {
-                if i1.parse::<usize>().is_ok() {}
-            }
-        };
-    }
-
-    #[allow(unused_mut)]
-    let mut iter_term = input_elements.into_iter();
-    #[allow(unused_variables, unreachable_code)]
-    for term_line in iter_term {
-        // NOTE: WORK IN PROGRESS. THE BELOW HAS A BORROWING ERROR.
-        // let sfs_pointer_temp = match_to_tree(term_line, &mut sfs_tree, &mut sfs_pointer);
-        //       match_to_tree(term_line, &mut sfs_tree, &mut sfs_pointer);
-
-        // NOTE: Remove below if function works1
-        // let mut term_line_iter = term_line.into_iter().multipeek();
-        // let i1 = term_line_iter.next().unwrap_or(&"").trim();
-        // let i2 = term_line_iter.next().unwrap_or(&"").trim();
-        // let i3 = term_line_iter.next().unwrap_or(&"").trim();
-        // // let sfs_tree_ref = &mut sfs_tree;
-        // // drop(sfs_tree_ref);
-        // match i1 {
-        //     "$" => {
-        //         match i2 {
-        //             "cd" => {
-        //                 match i3 {
-        //                     ".." => {
-        //                         if let Some(_) = Some(0) {
-        //                              sfs_pointer = sfs_tree.get(sfs_pointer).unwrap().parent().unwrap();
-        //                         }
-        //                     }
-        //                     "/" => {
-        //                          "/".to_string();
-        //                          sfs_pointer = &root_id;
-        //                     }
-        //                     _ => {
-        //                         i3.to_string();
-        //                         for child in sfs_tree.children_ids(sfs_pointer).unwrap() {
-        //                             if sfs_tree.get(child).unwrap().data().name == i3 {
-        //                                 sfs_pointer = child;
-        //                             }
-        //                         }
-        //                         // current_pointer = current_pointer.
-        //                     }
-        //                 };
-        //             }
-        //             "ls" => {}
-        //             _ => {}
-        //         };
-        //     }
-        //     "dir" => {
-        //      // let new_node = sfs_tree.insert(Node::new(FileListing2 { name: i2.to_string(), size: 0, is_dir: true, p_name: "".to_string(), c_names: Vec::new() }) , UnderNode(sfs_pointer)).unwrap();
-
-        //     }
-        //     // "123" => {  },
-        //     _ => {
-        //         // if i2.map(|| true) {
-        //         if i1.parse::<usize>().is_ok() {
-
-        //         }
-        //     }
-        // };
-    }
-    let mut size_over_10k: usize = 0;
-    let size = 1;
-    if size <= 100_000 {
-        size_over_10k += size;
-    }
-
-    fn add_sizes(entry: FileListing2, fs: &HashMap<String, FileListing2>) -> usize {
-        let mut sum_sizes: usize = 0;
-        if entry.size == 0 {
-            for child in entry.c_names.into_iter() {
-                sum_sizes += add_sizes(fs.get(&child).unwrap().to_owned(), &fs);
-            }
-        } else {
-            sum_sizes += entry.size;
         }
-        sum_sizes
+    };
+}
+
+fn apply_dir_sizes<'a, 'b>(tree: &'a mut Tree<FileListing2>) {
+    let mut dir_size_vec: Vec<(NodeId, usize, FileListing2)> = Vec::new();
+    let mut tree_traversal = tree
+        .traverse_level_order_ids(&tree.root_node_id().unwrap().clone())
+        .unwrap();
+    while let Some(item_id) = tree_traversal.next() {
+        let temp_item = tree.get(&item_id).unwrap().data();
+        if temp_item.is_dir == true {
+            let mut local_total: usize = 0;
+            for child in tree.get(&item_id).unwrap().children().into_iter() {
+                if tree.get(child).unwrap().data().is_dir == false {
+                    local_total += tree.get(child).unwrap().data().size;
+                }
+            }
+            dir_size_vec.push((item_id.clone(), local_total, temp_item.clone()));
+        }
     }
-
-    Ok(size_over_10k as i128)
+    // separate loop defined to take the borrows out of scope from the previous loop.
+    for (node_id, size, mut file_listing) in dir_size_vec.into_iter() {
+        file_listing.size = size;
+        tree.get_mut(&node_id).unwrap().replace_data(file_listing);
+    }
 }
 
-pub struct FileListing<'a> {
-    name: &'a str,
-    size: usize,
-    is_dir: bool,
+// add sizes of all directories and files under the specified directory node.
+fn pseudo_recursive_add_sizes(node_id: &NodeId, tree: &Tree<FileListing2>) -> usize {
+    let mut cumulative_size: usize = 0;
+    let mut tree_traversal = tree.traverse_level_order(&node_id).unwrap();
+    while let Some(item) = tree_traversal.next() {
+        if item.data().is_dir == true {
+            cumulative_size += item.data().size;
+        }
+    }
+    cumulative_size
 }
 
-enum Command {
-    ls,
-    dir,
-    cd(String),
-}
-enum Output {
-    DirList(Vec<(String, usize)>),
-    None,
-}
-enum Terminal {
-    Command(Command),
-    Output(Output),
-}
-
-#[allow(unused_variables)]
-pub fn day_7_challenge_2(config: &Config) -> Result<i128, Error> {
-    Ok(0)
-}
-
+// unit test config function
 pub fn test_config_d7() -> Config {
     let test_config: Config = Config {
         challenge: 7,

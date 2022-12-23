@@ -17,7 +17,9 @@ mod day8;
 mod day9;
 // day 10
 mod day11;
+mod day12;
 mod day14;
+mod day17;
 
 use clap::Parser;
 // use std::env;
@@ -159,6 +161,18 @@ fn main() {
                     .into(),
             );
         }
+        12 => {
+            result.push(
+                day12::day_12_challenge_1(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+            result.push(
+                day12::day_12_challenge_2(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+        }
         14 => {
             result.push(
                 day14::day_14_challenge_1(&config.as_ref().unwrap())
@@ -171,7 +185,19 @@ fn main() {
                     .into(),
             );
         }
-        15..=25 => {
+        17 => {
+            result.push(
+                day17::day_17_challenge_1(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+            result.push(
+                day17::day_17_challenge_2(&config.as_ref().unwrap())
+                    .unwrap()
+                    .into(),
+            );
+        }
+        18..=25 => {
             println!("These challenges haven't been completed yet.  Try again later!!");
             process::exit(1);
         }
@@ -184,7 +210,7 @@ fn main() {
     let duration = start.elapsed();
     println!(
         "\nThe results for Day {} are:\n\
-        Challenge 1 result {}\nChallenge 2 result {}\n\nExecution time including file reading: {:?}",
+        Challenge 1 result {}\nChallenge 2 result {}\n\nExecution time including file reading and buffering: {:?}",
         config.unwrap().challenge,
         result[0],
         result[1],

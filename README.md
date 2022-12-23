@@ -32,12 +32,15 @@ Hello Everyone! This is my second year with Advent of code and for a second time
 - *Added LOTS of comments to the code to explain it nearly line by line.*
 
 ### Day 7
-- Not solved.  Still a work in progress.  
-- I am dedicated to using a tree structure despite advice that it's not the fastest to code.
+- Solved finally!  This one took much longer that the others because I wanted to do it the "right" way. Challenge 2 went very quickly.
+- Data is stored in a true tree structure with the `id_tree` crate.
+- Made use of `Rc` and `RefCell` to deal with mutable and immutable references to the same data source in a loop that were on different arms of a match statement.  This is a personal first for me and there was a lot of fighting with the borrow checker.
+- Did not use a recurive function for adding values in the tree.  An earlier try revealed that this would create a stack overflow.  Used loops and temporary storage to accumulate data.Don't judge me harshly. 
 
 ### Day 8
 - Solved.  Mainly a lot of iterations through rows and columns with loop breaks where possible.
 - used the `grid` crate for 2 dimensional addressing.
+- update - It's failing unit tests days later and I don't know why. Puzzle output is still bcorrect. Tests to be debugged.
 
 ### Day 9
 - Solved! This was a fun one. 
@@ -45,9 +48,15 @@ Hello Everyone! This is my second year with Advent of code and for a second time
 
 ### Day 10
 - Skipped for now. Check back later.
+
 ### Day 11
 - Solved part One! Rumors are part 2 has a non-obvious mathemetical concept that I'll come back to.
 - Reformatted the input into YAML with string slicing. Used `serde` and `serde_yaml` to process the input and then procesed it further to get in the structs I wanted. This was the long way around inputting the data, but I wanted to learn the concepts of serialization and deserialization.  I spent a lot of extra time on that.
 - Also a good use of a `VecDeque`.  
+
+### Day 14
+- Solved! I tend to prefer the map puzzles, so I liked this one.
+- Used the `Grid` crate and matricies of `bool` data types for the rocks and sands.  I was overal pleased with the organization of this one.
+
 ### More Days Ahead!
 If I get much beyond Day 10, I be doing better than 2021!
